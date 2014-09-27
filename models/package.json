@@ -1,0 +1,14 @@
+{
+  "name": "candyland-models",
+  "version": "0.1.0",
+  "description": "data models",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dane Grant",
+  "license": "(c) Copyright 2014 Dane Grant",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  }
+}

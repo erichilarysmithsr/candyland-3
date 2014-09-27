@@ -1,0 +1,29 @@
+<header class="top-bar">
+    <a href="/">Home</a>
+    <h1>{{name}}</h1>
+</header>
+
+<section class="bot-options">
+    <div class="options-form">
+        <form action="bot" method="POST">
+            <ul class="fields">
+                <li><label for="botName">Bot Name:</label></li>
+                <li><input type="text" id="bot-name" name="botName" value="{{name}}"></li>
+
+                <li><label for="targetSite">Target Website:</label></li>
+                <li><input type="text" id="target-site" name="targetSite" value="{{target}}"></li>
+
+                <li><label for="searchQueries">Search Queries:</label></li>
+                <li><textarea type="text" id="search-queries" name="searchQueries">{{queries}}</textarea></li>
+
+                <li><button id="spawn-btn" type="submit" disabled>Update</button></li>
+            </ul>
+        </form>
+
+        <div class="result"></div>
+    </div>
+
+    <div class="instances">
+        {{instances}}
+    </div>
+</section>

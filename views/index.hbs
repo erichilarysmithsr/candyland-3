@@ -1,0 +1,63 @@
+<header class="top-bar">
+    <h1>Candyland v 2.0</h1>
+</header>
+
+<main class="home-content">
+
+    <section class="bot-list">
+        <h2>Bots</h2>
+        <table class="bots">
+            {{#if bots}}
+                <thead>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Target</th>
+                    <th>Runs</th>
+                    <th>Status</th>
+                </thead>
+                <tbody>
+                {{#each bots}}
+                    {{#if this}}
+                        <tr>
+                            <td class="id">{{this.id}}</td>
+                            <td class="name"><a href="/bot/{{this.id}}">{{this.name}}</a></td>
+                            <td class="target">{{this.target}}</td>
+                            <td class="runs">{{this.runs}}</td>
+                            <td class="toggle">
+                                <label class="label-switch">
+                                    <input type="checkbox" {{#if this.active}}checked{{/if}}>
+                                    <div class="checkbox"></div>
+                                </label>
+                            </td>
+                        </tr>
+                    {{/if}}
+                {{/each}}
+                </tbody>
+            {{/if}}
+        </table>
+    </section>
+
+    <section class="create-bot">
+        <h2>Spawn Bot</h2>
+        <div class="spawn-form">
+            <form action="bot" method="POST">
+                <ul class="fields">
+                    <li><label for="botName">Bot Name:</label></li>
+                    <li><input type="text" id="bot-name" name="botName"></li>
+                    
+                    <li><label for="targetSite">Target Website:</label></li>
+                    <li><input type="text" id="target-site" name="targetSite"></li>
+
+                    <li><label for="searchQueries">Search Queries:</label></li>
+                    <li><textarea type="text" id="search-queries" name="searchQueries"></textarea></li>
+
+                    <li><button id="spawn-btn" type="submit">Spawn</button></li>
+                </ul>
+            </form>
+
+            <div class="result"></div>
+        </div>
+
+    </section>
+
+</main>
