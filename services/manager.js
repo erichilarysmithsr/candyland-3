@@ -38,7 +38,7 @@ exports.spawnBot = function(target, queries, cb) {
     runCount++;
 
 
-    request('http://104.131.214.240:3000/event/Instances Length: ' + instances.length);
+    request('http://104.131.214.240:3000/event/Instances Length: ');
 
 
 //    (function killLingerer() {

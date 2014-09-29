@@ -91,12 +91,13 @@ server.pack.register([
                 instances: [],
                 active: bot.active,
                 idle: 15 * 60000,
-                runs: 0
+                runs: 0,
+                interval: undefined
             };
 
             if (bot.active) {
 
-                setInterval(function() {
+                server.app.bots[bot.id].interval = setInterval(function() {
 
                     var id = bot.id;
 

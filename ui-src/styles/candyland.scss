@@ -32,3 +32,10 @@ header {
  .bot-options {
    @include outer-container;
  }
+
+ .bots {
+  td {
+    word-wrap: break-word;
+    padding: 5px;
+  }
+ }

@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
             name: { type: DataTypes.STRING, allowNull: false, unique: true },
             target: { type: DataTypes.STRING, allowNull: false },
             queries: { type: DataTypes.TEXT, allowNull: false },
+            runs: { type: DataTypes.INTEGER },
             active: { type: DataTypes.BOOLEAN, allowNull: false }
         }
     );

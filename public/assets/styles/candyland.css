@@ -773,3 +773,8 @@ header {
   display: table;
   clear: both;
 }
+
+.bots td {
+  word-wrap: break-word;
+  padding: 5px;
+}
