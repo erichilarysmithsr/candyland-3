@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
             target: { type: DataTypes.STRING, allowNull: false },
             queries: { type: DataTypes.TEXT, allowNull: false },
             runs: { type: DataTypes.INTEGER },
+            idle: { type: DataTypes.INTEGER },
             active: { type: DataTypes.BOOLEAN, allowNull: false }
         }
     );

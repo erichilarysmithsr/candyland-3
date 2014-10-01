@@ -2,8 +2,6 @@ var manager = require('../services/manager');
 
 exports.get = function(request, reply) {
     var bot = request.server.app.bots[request.params.id];
-    var queries = bot.queries.split(', ');
-    console.log(queries);
     reply.view('bot', bot);
 };
 
@@ -15,6 +13,8 @@ exports.post = function(request, reply) {
         name: request.payload.botName,
         target: request.payload.targetSite,
         queries: request.payload.searchQueries,
+        idle: request.payload.waitTime,
+        runs: 0,
         active: true
     }).success(function(bot) {
 
@@ -25,16 +25,16 @@ exports.post = function(request, reply) {
             queries: bot.queries,
             instances: [],
             active: true,
-            idle: 16 * 60000,
+            idle: bot.idle,
             runs: 0,
-            interval: undefined
+            interval: null
         };
 
         request.server.app.bots[bot.id].interval = setInterval(function() {
 
             var id = bot.id;
 
-            if (server.app.bots[id].instances.length >= 3) {
+            if (server.app.bots[id].instances.length >= 2) {
                 try {
                     process.kill(-server.app.bots[id].instances[0].pid, 'SIGTERM');
                     server.app.bots[id].instances.shift();
@@ -44,13 +44,13 @@ exports.post = function(request, reply) {
                 }
             }
 
-            manager.spawnBot(bot.target, queries, function(instance) {
-                server.app.bots[bot.id].instances.push(instance);
+            manager.spawnBot(request.server.app.bots[id], function(instance) {
+                request.server.app.bots[id].instances.push(instance);
             });
 
             server.app.bots[id].runs++;
 
-        }, request.server.app.bots[bot.id].idle);
+        }, request.server.app.bots[bot.id].idle * 60000);
 
         reply('Bot started!');
 
@@ -68,11 +68,11 @@ exports.start = function(request, reply) {
 
         bot.active = true;
 
-        request.server.app.bots[bot.id].interval = setInterval(function() {
+        var id = request.params.id;
 
-            var id = bot.id;
+        request.server.app.bots[id].interval = setInterval(function() {
 
-            if (request.server.app.bots[id].instances.length >= 3) {
+            if (request.server.app.bots[id].instances.length >= 2) {
                 try {
                     process.kill(-request.server.app.bots[id].instances[0].pid, 'SIGTERM');
                     request.server.app.bots[id].instances.shift();
@@ -82,17 +82,19 @@ exports.start = function(request, reply) {
                 }
             }
 
-            manager.spawnBot(bot.target, request.server.app.bots[bot.id].queries, function(instance) {
-                request.server.app.bots[bot.id].instances.push(instance);
+            manager.spawnBot(request.server.app.bots[id], function(instance) {
+                request.server.app.bots[id].instances.push(instance);
             });
 
             request.server.app.bots[id].runs++;
-            request.server.app.bots[id].active = true;
 
-        });
+        }, request.server.app.bots[request.params.id].idle * 60000);
+
+        request.server.app.bots[id].active = true;
 
         bot.save();
     });
+
 
     reply('Bot has been started.');
 };
@@ -105,9 +107,11 @@ exports.stop = function(request, reply) {
 
         bot.active = false;
 
-        clearInterval(request.server.app.bots.interval);
+        var id = request.params.id;
 
-        request.server.app.bots[request.params.id].instances.forEach(function(instance) {
+        clearInterval(request.server.app.bots[id].interval);
+
+        request.server.app.bots[id].instances.forEach(function(instance) {
             try {
                 process.kill(-instance.pid, 'SIGTERM');
             } catch (error) {
@@ -115,9 +119,9 @@ exports.stop = function(request, reply) {
             }
         });
 
-        bot.runs = request.server.app.bots[request.params.id].runs;
-        request.server.app.bots[request.params.id].instances = [];
-        request.server.app.bots[request.params.id].active = false;
+        bot.runs += request.server.app.bots[id].runs;
+        request.server.app.bots[id].instances = [];
+        request.server.app.bots[id].active = false;
 
         bot.save();
     });

@@ -28,6 +28,7 @@
                                     <input id="{{this.id}}" type="checkbox" {{#if this.active}}checked{{/if}}>
                                     <div class="checkbox"></div>
                                 </label>
+                                <!--<div class="delete">x</div>-->
                             </td>
                         </tr>
                     {{/if}}
@@ -47,6 +48,9 @@
                     
                     <li><label for="targetSite">Target Website:</label></li>
                     <li><input type="text" id="target-site" name="targetSite"></li>
+
+                    <li><label for="waitTime">Wait Minutes:</label></li>
+                    <li><input type="text" id="wait-time" name="waitTime"></li>
 
                     <li><label for="searchQueries">Search Queries:</label></li>
                     <li><textarea type="text" id="search-queries" name="searchQueries"></textarea></li>

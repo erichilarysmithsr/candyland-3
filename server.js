@@ -67,16 +67,16 @@ server.pack.register([
 
     var models = server.plugins['candyland-models'].models;
     models
-        .sequelize
-        .sync()
-        .complete(function(err) {
-            if (err) throw err[0];
-            else {
-                server.start(function() {
-                    console.log('Server running at: ', server.info.uri);
-                });
-            }
-        });
+    .sequelize
+    .sync()
+    .complete(function(err) {
+        if (err) throw err[0];
+        else {
+            server.start(function() {
+                console.log('Server running at: ', server.info.uri);
+            });
+        }
+    });
 
     // load all bots into the application state
     models.Bot.findAll().success(function(results) {
@@ -90,9 +90,9 @@ server.pack.register([
                 queries: bot.queries,
                 instances: [],
                 active: bot.active,
-                idle: 15 * 60000,
+                idle: bot.idle,
                 runs: 0,
-                interval: undefined
+                interval: null
             };
 
             if (bot.active) {
@@ -101,7 +101,7 @@ server.pack.register([
 
                     var id = bot.id;
 
-                    if (server.app.bots[id].instances.length >= 3) {
+                    if (server.app.bots[id].instances.length >= 2) {
                         try {
                             process.kill(-server.app.bots[id].instances[0].pid, 'SIGTERM');
                             server.app.bots[id].instances.shift();
@@ -112,13 +112,13 @@ server.pack.register([
                     }
 
                     manager.spawnBot(bot.target, bot.queries, function(instance) {
-                        server.app.bots[bot.id].instances.push(instance);
+                        server.app.bots[id].instances.push(instance);
                     });
 
-                }, server.app.bots[bot.id].idle);
+                    server.app.bots[id].runs++;
+
+                }, server.app.bots[bot.id].idle * 60000);
             }
         });
     });
 });
-
-

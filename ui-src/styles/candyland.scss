@@ -38,4 +38,22 @@ header {
     word-wrap: break-word;
     padding: 5px;
   }
+   .toggle {
+     label {
+       display: inline-block;
+     }
+     .delete {
+       margin-left: 5px;
+//       padding: 5px;
+       text-align: center;
+       font-weight: bold;
+       height: 24px;
+       width: 24px;
+       background: red;
+       color: white;
+       cursor: pointer;
+       border-radius: 50%;
+       display: inline-block;
+     }
+   }
  }

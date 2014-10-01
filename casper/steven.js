@@ -12,7 +12,7 @@ var url = 'http://google.com',
 
 // set up variables
 var target = getHost(casper.cli.get("target")),
-	searchQuery = casper.cli.get("query").split("-").join(" ");
+	searchQuery = casper.cli.get("query").split("_").join(" ");
 
 var UAStrings = [
 	// 'Mozilla/5.0 (Linux; android 4.2.2; en-us; SAMSUNG SCH-I545 Build/JDQ39) ApplKit/535.19 (KHTML, like Gecko)',
