@@ -22,9 +22,9 @@ config.server = {
 
 if (process.env.NODE_ENV != 'production') {
     config.database = {
-        name: 'steven',
+        name: 'candyland',
         user: 'root',
-        pass: 'root'
+        pass: 'Dane123!'
     };
 }
 
