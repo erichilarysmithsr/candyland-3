@@ -120,7 +120,7 @@ casper.then(function parseResults() {
 
 		// still no results??? die!
 		if (!this.exists('h3.r a')) {
-			this.capture('captures/noresults.png');
+//			this.capture('captures/noresults.png');
 			this.die("Couldn't get search results");
 		}
 
