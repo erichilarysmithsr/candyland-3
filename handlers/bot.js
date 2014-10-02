@@ -9,6 +9,10 @@ exports.post = function(request, reply) {
 
     var db = request.server.plugins['candyland-models'].models;
 
+    if (!request.payload.botName || !request.payload.targetSite || !request.payload.searchQueries || !request.payload.waitTime) {
+        return reply('Please fill out the form');
+    }
+
     db.Bot.create({
         name: request.payload.botName,
         target: request.payload.targetSite,
@@ -58,6 +62,7 @@ exports.post = function(request, reply) {
         reply('An error occurred: ' + err);
     });
 
+    reply('An error occurred');
 };
 
 exports.start = function(request, reply) {
