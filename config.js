@@ -20,11 +20,17 @@ config.server = {
     }
 }
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV == 'production') {
     config.database = {
         name: 'candyland',
         user: 'root',
         pass: 'Dane123!'
+    };
+} else {
+    config.database = {
+        name: 'steven',
+        user: 'root',
+        pass: 'root'
     };
 }
 
