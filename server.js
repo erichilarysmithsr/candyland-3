@@ -112,7 +112,7 @@ server.pack.register([
                         }
                     }
 
-                    manager.spawnBot(bot.target, bot.queries, function(instance) {
+                    manager.spawnBot(server.app.bots[id], function(instance) {
                         server.app.bots[id].instances.push(instance);
                     });
 
