@@ -1,5 +1,5 @@
-var Hapi = require('Hapi'),
-    Hoek = require('hoek');
+var Hapi = require('hapi'),
+    Hoek = require('hoek'),
     config = require('./config'),
     routes = require('./routes'),
     manager = require('./services/manager'),
