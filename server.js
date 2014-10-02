@@ -59,7 +59,8 @@ server.pack.register([
             database: config.database.name,
             user: config.database.user,
             pass: config.database.pass,
-            dialect: 'mysql'
+            dialect: 'mysql',
+            port: config.database.port
         }
     }
 ], function(err) {

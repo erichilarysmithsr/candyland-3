@@ -24,13 +24,15 @@ if (process.env.NODE_ENV == 'production') {
     config.database = {
         name: 'candyland',
         user: 'root',
-        pass: 'Dane123!'
+        pass: 'Dane123!',
+        port: 3306
     };
 } else {
     config.database = {
         name: 'steven',
         user: 'root',
-        pass: 'root'
+        pass: 'root',
+        port: 8889
     };
 }
 

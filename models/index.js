@@ -14,8 +14,8 @@ var fs          = require('fs'),
 exports.register = function(plugin, options, next) {
     // Create db connection
     var sequelize = new Sequelize(options.database, options.user, options.pass, {
-        dialect: options.dialect || 'mysql'
-//        port: options.port || 8889
+        dialect: options.dialect || 'mysql',
+        port: options.port || 3306
     });
 
     // Add all models to db object
