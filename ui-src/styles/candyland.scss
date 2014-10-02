@@ -9,6 +9,118 @@ header {
   text-align: center;
 }
 
+input:disabled, textarea:disabled {
+  &:hover {
+    cursor: not-allowed;
+  }
+  background: #eee;
+}
+button:disabled {
+  background: #eee;
+}
+//strong { font-weight: bold; }
+
+.contain {
+  @include outer-container;
+}
+
+.accordion-tabs {
+  $tab-border-color: #ccc;
+  $tab-border: 1px solid $tab-border-color;
+  $tab-content-background: white;
+  $tab-active-background: white;
+  $tab-inactive-color: #eee;
+  $tab-inactive-hover-color: darken($light-gray, 5);
+  $tab-mode: $medium-screen;
+
+  @include clearfix;
+  border: $tab-border;
+  border-radius: $base-border-radius;
+  margin-bottom: 10px;
+
+  @include media($tab-mode) {
+    border: none;
+  }
+
+  li.tab-header-and-content {
+
+    @include media($tab-mode) {
+      display: inline;
+    }
+
+    &:first-child a.tab-link {
+      border-top-left-radius: $base-border-radius;
+      border-top-right-radius: $base-border-radius;
+      border-top: 0;
+    }
+
+    &:last-child a.tab-link {
+      border-bottom-left-radius: $base-border-radius;
+      border-bottom-right-radius: $base-border-radius;
+
+      @include media($tab-mode) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+
+  li.tab-header-and-content a.tab-link {
+    background-color: $tab-inactive-color;
+    border-top: $tab-border;
+    color: $dark-gray;
+    display: block;
+    font-weight: bold;
+    padding: 5px 10px;
+
+    @include media($tab-mode) {
+      @include inline-block;
+      border-top: 0;
+      border-top-right-radius: $base-border-radius;
+      border-top-left-radius: $base-border-radius;
+    }
+
+    &:hover {
+      color: $base-link-color;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &.is-active {
+      background-color: $tab-active-background;
+      border-bottom: 0;
+
+      @include media($tab-mode) {
+        background-color: $tab-active-background;
+        border: $tab-border;
+        border-bottom: 1px solid $tab-active-background;
+        margin-bottom: -1px;
+      }
+    }
+  }
+
+  li.tab-header-and-content .tab-content {
+    padding: 10px 5px;
+    background: $tab-content-background;
+    display: none;
+    overflow: hidden;
+    width: 100%;
+
+    @include media($tab-mode) {
+      border-bottom-left-radius: $base-border-radius;
+      border-bottom-right-radius: $base-border-radius;
+      border: $tab-border;
+      float: left;
+      left: 0;
+      padding: 15px;
+
+
+    }
+  }
+}
+
 /* ===========================
  *  Home Page
  * =========================== */
@@ -39,17 +151,20 @@ header {
     padding: 5px;
   }
    .toggle {
+
      label {
        display: inline-block;
      }
+
      .delete {
-       margin-left: 5px;
-//       padding: 5px;
        text-align: center;
        font-weight: bold;
-       height: 24px;
-       width: 24px;
-       background: red;
+       height: 26px;
+       width: 26px;
+       @include linear-gradient(red, darken(red, 15));
+       position: relative;
+       bottom: 2px;
+       left: 10px;
        color: white;
        cursor: pointer;
        border-radius: 50%;
@@ -57,3 +172,54 @@ header {
      }
    }
  }
+
+/* ===========================
+ *  Bot page
+ * =========================== */
+
+.home-link {
+  float: left;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 3px;
+  margin-top: 7px;
+  color: #333333;
+}
+
+.top-bar h1 {
+  text-align: center;
+  padding-top: 5px;
+}
+
+.bot-options {
+  padding: 20px 0;
+  @include span-columns(5);
+
+  h2 {
+    margin: 10px 0;
+  }
+}
+
+.bot-stats {
+  padding: 20px 0;
+  @include shift(1);
+  @include span-columns(5);
+
+  h2 {
+    margin: 10px 0;
+  }
+  .stats {
+
+    li {
+      display: inline-block;
+    }
+  }
+}
+
+.bot-log {
+  margin-top: 50px;
+  h2 {
+    text-align: center;
+  }
+}
+
