@@ -34,12 +34,12 @@ exports.post = function(request, reply) {
 
             var id = bot.id;
 
-            if (server.app.bots[id].instances.length >= 2) {
+            if (request.server.app.bots[id].instances.length >= 2) {
                 try {
-                    process.kill(-server.app.bots[id].instances[0].pid, 'SIGTERM');
-                    server.app.bots[id].instances.shift();
+                    process.kill(-request.server.app.bots[id].instances[0].pid, 'SIGTERM');
+                    request.server.app.bots[id].instances.shift();
                 } catch (error) {
-                    server.app.bots[id].instances.shift();
+                    request.server.app.bots[id].instances.shift();
                     console.log(error);
                 }
             }
@@ -48,7 +48,7 @@ exports.post = function(request, reply) {
                 request.server.app.bots[id].instances.push(instance);
             });
 
-            server.app.bots[id].runs++;
+            request.server.app.bots[id].runs++;
 
         }, request.server.app.bots[bot.id].idle * 60000);
 
