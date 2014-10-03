@@ -10,6 +10,7 @@ exports.endpoints = [
     { method: 'POST', path: '/bot/{id}/stop', handler: bot.stop },
     { method: 'POST', path: '/bot/{id}/start', handler: bot.start },
     { method: 'POST', path: '/bot/{id}/delete', handler: bot.delete },
-    { method: 'POST', path: '/bot/{id}/update', handler: bot.update }
+    { method: 'POST', path: '/bot/{id}/update', handler: bot.update },
+    { method: 'POST', path: '/bot/{id}/log/{msg}', handler: bot.log }
 
 ];

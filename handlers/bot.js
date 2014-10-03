@@ -9,10 +9,6 @@ exports.post = function(request, reply) {
 
     var db = request.server.plugins['candyland-models'].models;
 
-    if (!request.payload.botName || !request.payload.targetSite || !request.payload.searchQueries || !request.payload.waitTime) {
-        return reply('Please fill out the form');
-    }
-
     db.Bot.create({
         name: request.payload.botName,
         target: request.payload.targetSite,
@@ -56,24 +52,22 @@ exports.post = function(request, reply) {
 
         }, request.server.app.bots[bot.id].idle * 60000);
 
-        reply('Bot started!');
+        return reply('Bot started!');
 
     }).error(function(err) {
-        reply('An error occurred: ' + err);
+        return reply('An error occurred: ' + err);
     });
 
-    reply('An error occurred');
 };
 
 exports.start = function(request, reply) {
 
-    var db = request.server.plugins['candyland-models'].models;
+    var db = request.server.plugins['candyland-models'].models,
+        id = request.params.id;
 
-    db.Bot.find(request.params.id).success(function(bot) {
+    db.Bot.find(id).success(function(bot) {
 
         bot.active = true;
-
-        var id = request.params.id;
 
         request.server.app.bots[id].interval = setInterval(function() {
 
@@ -93,7 +87,7 @@ exports.start = function(request, reply) {
 
             request.server.app.bots[id].runs++;
 
-        }, request.server.app.bots[request.params.id].idle * 60000);
+        }, request.server.app.bots[id].idle * 60000);
 
         request.server.app.bots[id].active = true;
 
@@ -106,22 +100,17 @@ exports.start = function(request, reply) {
 
 exports.stop = function(request, reply) {
 
-    var db = request.server.plugins['candyland-models'].models;
+    var db = request.server.plugins['candyland-models'].models,
+        id = request.params.id;
 
-    db.Bot.find(request.params.id).success(function(bot) {
+    db.Bot.find(id).success(function(bot) {
 
         bot.active = false;
-
-        var id = request.params.id;
 
         clearInterval(request.server.app.bots[id].interval);
 
         request.server.app.bots[id].instances.forEach(function(instance) {
-            try {
-                process.kill(-instance.pid, 'SIGTERM');
-            } catch (error) {
-                console.log(error);
-            }
+            process.kill(-instance.pid, 'SIGTERM');
         });
 
         bot.runs += request.server.app.bots[id].runs;
@@ -145,39 +134,82 @@ exports.delete = function(request, reply) {
         clearInterval(request.server.app.bots[id].interval);
 
         request.server.app.bots[id].instances.forEach(function(instance) {
-            try {
-                process.kill(-instance.pid, 'SIGTERM');
-            } catch (error) {
-                console.log(error);
-            }
+            process.kill(-instance.pid, 'SIGTERM');
         });
 
         request.server.app.bots[id] = null;
 
-        bot.destroy();
+        bot.destroy()
+            .success(function() {
+                return reply('Bot has been deleted');
+            })
+            .error(function(err) {
+                return reply('An error occurred: ' + err);
+            });
     });
-
-    reply('Bot has been deleted.');
 };
 
 exports.update = function(request, reply) {
 
-    var db = request.server.plugins['candyland-models'].models;
+    var db = request.server.plugins['candyland-models'].models,
+        id = request.params.id;
 
-    db.Bot.find(request.params.id).success(function(bot) {
+    clearInterval(request.server.app.bots[id].interval);
+
+    request.server.app.bots[id].instances.forEach(function(instance) {
+        process.kill(-instance.pid, 'SIGTERM');
+    });
+
+    request.server.app.bots[id].instances = [];
+
+    db.Bot.find(id).success(function(bot) {
 
         bot.name = request.payload.botName;
         bot.target = request.payload.targetSite;
         bot.queries = request.payload.searchQueries;
         bot.idle = request.payload.waitTime;
+        bot.runs += request.server.app.bots[id].runs;
 
         request.server.app.bots[bot.id].name = bot.name;
         request.server.app.bots[bot.id].target = bot.target;
         request.server.app.bots[bot.id].queries = bot.queries;
         request.server.app.bots[bot.id].idle = bot.idle;
 
-        bot.save();
-    });
+        bot.save()
+            .success(function() {
 
-    reply('Bot has been updated');
+                request.server.app.bots[id].interval = setInterval(function() {
+
+                    if (request.server.app.bots[id].instances.length >= 2) {
+                        try {
+                            process.kill(-request.server.app.bots[id].instances[0].pid, 'SIGTERM');
+                            request.server.app.bots[id].instances.shift();
+                        } catch (error) {
+                            request.server.app.bots[id].instances.shift();
+                            console.log(error);
+                        }
+                    }
+
+                    manager.spawnBot(request.server.app.bots[id], function(instance) {
+                        request.server.app.bots[id].instances.push(instance);
+                    });
+
+                    request.server.app.bots[id].runs++;
+
+                }, request.server.app.bots[request.params.id].idle * 60000);
+
+                return reply('Bot has been updated.');
+            })
+            .error(function(err) {
+                return reply('An error has occurred: ' + err);
+            });
+    });
+};
+
+exports.log = function(request, reply) {
+
+    var log = require('../services/log');
+
+    log.write(request.params.id, request.params.msg);
+    reply('message sent');
 };

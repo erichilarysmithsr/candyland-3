@@ -1,5 +1,4 @@
 var $ = require('jquery');
-//var happy = require('happy');
 
 $(function() {
 
@@ -36,20 +35,6 @@ $(function() {
         }
     });
 
-    $('.spawn-btn').click(function(e) {
-        e.preventDefault();
-
-        var spawn = $('.spawn-form form').serialize();
-
-        $.ajax({
-            type: 'POST',
-            url: 'bot',
-            data: spawn
-        }).done(function(data) {
-            $('.result').html(data);
-        });
-
-    });
 
     $('.edit-btn').click(function(e) {
         e.preventDefault();
@@ -71,6 +56,21 @@ $(function() {
         }).done(function(data) {
             $('.result').html(data);
         });
+    });
+
+    $('.spawn-btn').click(function(e) {
+        e.preventDefault();
+
+        var spawn = $('.spawn-form form').serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: 'bot',
+            data: spawn
+        }).done(function(data) {
+            $('.result').html(data);
+        });
+
     });
 
     $('.accordion-tabs').each(function(index) {

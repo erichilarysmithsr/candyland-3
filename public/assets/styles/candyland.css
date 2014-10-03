@@ -962,3 +962,10 @@ button:disabled {
 .bot-log h2 {
   text-align: center;
 }
+
+.result {
+  margin-top: 15px;
+  border-radius: 2px;
+  padding: 5px;
+  background: #eee;
+}
