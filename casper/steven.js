@@ -8,11 +8,12 @@ var utils = require('utils');
 var url = 'http://google.com',
 	resultIndex = -1,
 	pageCounter = 1;
-	// imgCounter = 0;
 
 // set up variables
 var target = getHost(casper.cli.get("target")),
-	searchQuery = casper.cli.get("query").split("_").join(" ");
+	searchQuery = casper.cli.get("query").split("_").join(" "),
+    logString = casper.cli.get("logString"),
+    botID = casper.cli.get("id");
 
 var UAStrings = [
 	// 'Mozilla/5.0 (Linux; android 4.2.2; en-us; SAMSUNG SCH-I545 Build/JDQ39) ApplKit/535.19 (KHTML, like Gecko)',
@@ -43,14 +44,13 @@ var UAStrings = [
 
 // set bot user agent string
 var UANumber = randomIntFromInterval(1, UAStrings.length);
-casper.echo(UAStrings[UANumber]);
 casper.userAgent(UAStrings[UANumber]);
 
 
 casper.on('error', function(msg, backtrace) {
 	this.evaluate(function(msg) {
 		var oReq = new XMLHttpRequest();
-		oReq.open("get", 'http://104.131.214.240:3000/error/' + msg, true);
+		oReq.open("post", logString + 'error/' + msg, true);
 		oReq.send(null);
 		this.die(msg);
 	}, msg);	
@@ -59,7 +59,7 @@ casper.on('error', function(msg, backtrace) {
 casper.on('event', function(msg, backtrace) {
 	this.evaluate(function(msg) {
 		var oReq = new XMLHttpRequest();
-		oReq.open("get", 'http://104.131.214.240:3000/event/' + msg, true);
+		oReq.open("post", logString + 'event/' + msg, true);
 		oReq.send(null);
 		this.echo(oReq.responseText);
 	}, msg);	

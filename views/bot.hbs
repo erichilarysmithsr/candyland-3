@@ -1,7 +1,7 @@
 <header class="top-bar">
     <div class="contain">
         <a class="home-link" href="/">Home</a>
-        <h1>{{name}}</h1>
+        <h1>{{bot.name}}</h1>
     </div>
 </header>
 
@@ -12,16 +12,16 @@
             <form action="bot" method="POST">
                 <ul class="fields">
                     <li><label for="botName">Bot Name:</label></li>
-                    <li><input type="text" id="bot-name" name="botName" value="{{name}}" disabled="disabled"></li>
+                    <li><input type="text" id="bot-name" name="botName" value="{{bot.name}}" disabled="disabled"></li>
 
                     <li><label for="targetSite">Target Website:</label></li>
-                    <li><input type="text" id="target-site" name="targetSite" value="{{target}}" disabled="disabled"></li>
+                    <li><input type="text" id="target-site" name="targetSite" value="{{bot.target}}" disabled="disabled"></li>
 
                     <li><label for="waitTime">Wait Minutes:</label></li>
-                    <li><input type="text" id="wait-time" name="waitTime" value="{{idle}}" disabled="disabled"></li>
+                    <li><input type="text" id="wait-time" name="waitTime" value="{{bot.idle}}" disabled="disabled"></li>
 
                     <li><label for="searchQueries">Search Queries:</label></li>
-                    <li><textarea type="text" id="search-queries" name="searchQueries" disabled="disabled">{{queries}}</textarea></li>
+                    <li><textarea type="text" id="search-queries" name="searchQueries" disabled="disabled">{{bot.queries}}</textarea></li>
 
                     <li><button class="edit-btn">Edit</button> <button class="update-btn" type="submit" disabled="disabled">Update</button></li>
                 </ul>
@@ -42,7 +42,7 @@
                 <a href="#" class="is-active tab-link">Current</a>
                 <div class="tab-content">
                     <ul class="stats">
-                        <li>Runs: <strong>{{runs}}</strong></li>
+                        <li>Runs: <strong>{{bot.runs}}</strong></li>
                         <li></li>
                         <li></li>
                         <li></li>
@@ -67,4 +67,9 @@
 
 <section class="bot-log">
     <h2>Bot Log</h2>
+    <ul class="logs">
+        {{#each log}}
+            <li><span {{#if this.status}}style="color: red;"{{/if}} class="run">{{this.run}}</span> <span class="meta">{{this.time}}:</span> <span class="message">{{this.message}}</span></li>
+        {{/each}}
+    </ul>
 </section>

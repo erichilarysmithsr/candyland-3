@@ -1,11 +1,15 @@
 var spawn = require('child_process').spawn,
-    request = require('request');
-
-var runCount = 0;
+    Wreck = require('wreck'),
+    config = require('../config');
 
 exports.spawnBot = function(bot, cb) {
 
-    request('http://104.131.214.240:3000/event/' + bot.name + ' started');
+    var url = 'http://' + config.host + ':' + config.port;
+    var logString = url + '/bot/' + bot.id + '/';
+
+    Wreck.post(logString + 'status/' + bot.name + ' starting run ' + bot.runs, function(err, res, payload) {
+        if (err) throw err;
+    });
 
     var queries = bot.queries.split(", ");
     var randomQuery = Math.floor(Math.random() * (queries.length - 0) + 0);
@@ -14,20 +18,12 @@ exports.spawnBot = function(bot, cb) {
     var instance =
         spawn(
             'casperjs',
-            ['../casper/steven.js', '--proxy=127.0.0.1:9050', '--proxy-type=socks5', '--target=' + bot.target, '--query=' + query],
+            ['../casper/steven.js', '--proxy=127.0.0.1:9050', '--proxy-type=socks5', '--target=' + bot.target, '--query=' + query, '--log=' + logString, '--id=' + bot.id],
             {
                 cwd: __dirname,
                 detached: true
             }
         );
 
-    request('http://104.131.214.240:3000/event/Starting run ' + runCount + '.', function(error, response, body) {
-        if (response.statusCode == 200) {
-            request('http://104.131.214.240:3000/event/Searching Google with query ' + query + ' ' + bot.target);
-        }
-    });
-
-    runCount++;
-
-    cb(instance);
+    cb(instance, bot.id);
 }

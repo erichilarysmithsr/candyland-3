@@ -1,8 +1,15 @@
-var manager = require('../services/manager');
+var manager = require('../services/manager'),
+    log = require('../services/log');
 
 exports.get = function(request, reply) {
-    var bot = request.server.app.bots[request.params.id];
-    reply.view('bot', bot);
+
+    var id = request.params.id,
+        context = {};
+
+    context.bot = request.server.app.bots[id];
+    context.log = log.load(id);
+
+    reply.view('bot', context);
 };
 
 exports.post = function(request, reply) {
@@ -81,8 +88,24 @@ exports.start = function(request, reply) {
                 }
             }
 
-            manager.spawnBot(request.server.app.bots[id], function(instance) {
-                request.server.app.bots[id].instances.push(instance);
+            manager.spawnBot(request.server.app.bots[id], function(instance, curID) {
+
+                request.server.app.bots[curID].instances.push(instance);
+
+                instance.stdout.on('data', function(data) {
+                    var message = data.toString('utf8');
+
+                    log.write(curID, message.replace('s/\x1B\[[0-9;]*[JKmsu]//g'), request.server.app.bots[curID].runs, false);
+                });
+
+                instance.stderr.on('data', function(data) {
+//                    log.write(curID, data.toString('utf8'), request.server.app.bots[curID].runs, true);
+                });
+
+                instance.on('close', function(code) {
+                    log.write(curID, 'Bot has finished.', request.server.app.bots[curID].runs, true);
+                });
+
             });
 
             request.server.app.bots[id].runs++;
@@ -110,7 +133,11 @@ exports.stop = function(request, reply) {
         clearInterval(request.server.app.bots[id].interval);
 
         request.server.app.bots[id].instances.forEach(function(instance) {
-            process.kill(-instance.pid, 'SIGTERM');
+            try {
+                process.kill(-instance.pid, 'SIGTERM');
+            } catch (error) {
+
+            }
         });
 
         bot.runs += request.server.app.bots[id].runs;
@@ -134,10 +161,16 @@ exports.delete = function(request, reply) {
         clearInterval(request.server.app.bots[id].interval);
 
         request.server.app.bots[id].instances.forEach(function(instance) {
-            process.kill(-instance.pid, 'SIGTERM');
+            try {
+                process.kill(-instance.pid, 'SIGTERM');
+            } catch (error) {
+                // do nothing
+            }
         });
 
         request.server.app.bots[id] = null;
+
+        log.delete(id);
 
         bot.destroy()
             .success(function() {
@@ -157,7 +190,11 @@ exports.update = function(request, reply) {
     clearInterval(request.server.app.bots[id].interval);
 
     request.server.app.bots[id].instances.forEach(function(instance) {
-        process.kill(-instance.pid, 'SIGTERM');
+        try {
+            process.kill(-instance.pid, 'SIGTERM');
+        } catch (error) {
+            // do nothing
+        }
     });
 
     request.server.app.bots[id].instances = [];
@@ -206,10 +243,20 @@ exports.update = function(request, reply) {
     });
 };
 
-exports.log = function(request, reply) {
+exports.status = function(request, reply) {
 
     var log = require('../services/log');
 
-    log.write(request.params.id, request.params.msg);
+    log.write(request.params.id, request.params.msg, request.server.app.bots[request.params.id].runs, false);
+
     reply('message sent');
 };
+
+exports.error = function(request, reply) {
+
+    var log = require('../services/log');
+
+    log.write(request.params.id, request.params.msg, request.server.app.bots[request.params.id].runs, true);
+
+    reply('message sent');
+}

@@ -11,6 +11,7 @@ exports.endpoints = [
     { method: 'POST', path: '/bot/{id}/start', handler: bot.start },
     { method: 'POST', path: '/bot/{id}/delete', handler: bot.delete },
     { method: 'POST', path: '/bot/{id}/update', handler: bot.update },
-    { method: 'POST', path: '/bot/{id}/log/{msg}', handler: bot.log }
+    { method: 'POST', path: '/bot/{id}/error/{msg}', handler: bot.error },
+    { method: 'POST', path: '/bot/{id}/status/{msg}', handler: bot.status }
 
 ];
