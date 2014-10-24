@@ -52,7 +52,8 @@ casper.on('error', function(msg, backtrace) {
 		var oReq = new XMLHttpRequest();
 		oReq.open("post", logString + 'error/' + msg, true);
 		oReq.send(null);
-		this.die(msg);
+        this.echo(msg);
+		this.die();
 	}, msg);	
 });
 
@@ -61,7 +62,7 @@ casper.on('event', function(msg, backtrace) {
 		var oReq = new XMLHttpRequest();
 		oReq.open("post", logString + 'event/' + msg, true);
 		oReq.send(null);
-		this.echo(oReq.responseText);
+		this.echo(msg);
 	}, msg);	
 
 });

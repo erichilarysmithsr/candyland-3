@@ -98,9 +98,6 @@ exports.start = function(request, reply) {
                     log.write(curID, message.replace('s/\x1B\[[0-9;]*[JKmsu]//g'), request.server.app.bots[curID].runs, false);
                 });
 
-                instance.stderr.on('data', function(data) {
-//                    log.write(curID, data.toString('utf8'), request.server.app.bots[curID].runs, true);
-                });
 
                 instance.on('close', function(code) {
                     log.write(curID, 'Bot has finished.', request.server.app.bots[curID].runs, true);

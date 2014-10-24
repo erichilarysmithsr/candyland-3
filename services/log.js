@@ -1,8 +1,11 @@
 var fs = require('fs'),
     path = require('path'),
+    cheerio = require('cheerio'),
     moment = require('moment');
 
 exports.write = function(id, message, run, type) {
+
+
 
     var file = path.join(__dirname, '../logs/' + id + '.json');
 
