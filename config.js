@@ -20,20 +20,13 @@ config.server = {
     }
 }
 
-if (process.env.NODE_ENV == 'production') {
-    config.database = {
-        name: 'candyland',
-        user: 'root',
-        pass: 'Dane123!',
-        port: 3306
-    };
-} else {
-    config.database = {
-        name: 'steven',
-        user: 'root',
-        pass: 'root',
-        port: 8889
-    };
-}
+
+config.database = {
+    name: 'steven',
+    user: 'root',
+    pass: 'root',
+    port: 8889
+};
+
 
 module.exports = config;
